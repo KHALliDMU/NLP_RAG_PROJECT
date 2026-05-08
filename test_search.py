@@ -36,4 +36,4 @@ def search_cvs(query, top_k=5):
 
 
 if __name__ == "__main__":
-    search_cvs("Find frontend candidates with React and JavaScript", top_k=3)
+    search_cvs("Find candidates with Python and SQL experiencet", top_k=3)
