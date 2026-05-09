@@ -1,8 +1,13 @@
+# ── Existing (Phase 1 & 2) ────────────────────────────────────────────────────
+chromadb
 langchain
 langchain-community
-langchain-text-splitters
-langchain-huggingface
-langchain-chroma
-chromadb
 sentence-transformers
 pypdf
+
+# ── Phase 3: RAG API ──────────────────────────────────────────────────────────
+fastapi
+uvicorn[standard]
+langchain-chroma
+langchain-groq
+python-dotenv

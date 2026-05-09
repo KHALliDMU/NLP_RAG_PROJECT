@@ -1,4 +1,6 @@
+# pyrefly: ignore [missing-import]
 from langchain_huggingface import HuggingFaceEmbeddings
+# pyrefly: ignore [missing-import]
 from langchain_chroma import Chroma
 
 
