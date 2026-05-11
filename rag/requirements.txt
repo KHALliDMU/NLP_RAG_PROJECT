@@ -1,4 +1,4 @@
-# ── Existing (Phase 1 & 2) ────────────────────────────────────────────────────
+# ── Core ─────────────────────────────────────────────────────────────────────
 chromadb
 langchain
 langchain-community
@@ -11,3 +11,4 @@ uvicorn[standard]
 langchain-chroma
 langchain-groq
 python-dotenv
+python-multipart
