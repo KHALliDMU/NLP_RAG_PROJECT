@@ -36,6 +36,7 @@ class SourceItem(BaseModel):
     chunk_index: Optional[int]
     total_chunks: Optional[int]
     upload_time: Optional[str]
+    content: str
     score: float
 
 

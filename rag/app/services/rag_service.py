@@ -88,22 +88,47 @@ class RAGService:
             question, k=top_k
         )
 
-        # Filter by score threshold
-        filtered_results = [
-            (doc, score) for doc, score in docs_with_scores if score >= score_threshold
-        ]
+        # Filter by score threshold (allow score=0 with default threshold)
+        if score_threshold > 0:
+            filtered_results = [
+                (doc, score) for doc, score in docs_with_scores if score >= score_threshold
+            ]
+        else:
+            filtered_results = docs_with_scores
 
+        # Deduplicate by file_name + chunk_index
+        seen = set()
         sources = []
         for doc, score in filtered_results:
             meta = doc.metadata
+            file_name = meta.get("file_name", meta.get("source", "unknown"))
+            chunk_idx = meta.get("chunk_index", meta.get("chunk_id", 0))
+            unique_key = (file_name, chunk_idx)
+
+            # Skip if we've already seen this chunk
+            if unique_key in seen:
+                continue
+            seen.add(unique_key)
+
+            # Truncate content to 300 chars for response
+            content = doc.page_content[:300]
+            if len(doc.page_content) > 300:
+                content += "..."
+
+            # Get page number - PyPDFLoader uses 0-indexed "page", so add 1
+            page = meta.get("page", meta.get("page_number", 0))
+            if isinstance(page, int) and page >= 0:
+                page = page + 1 if page < 100 else page  # Assume page < 100 is 0-indexed
+
             sources.append(
                 {
-                    "file_name": meta.get("file_name", meta.get("source", "unknown")),
-                    "page": meta.get("page"),
+                    "file_name": file_name,
+                    "page": page,
                     "chunk_id": meta.get("chunk_id"),
-                    "chunk_index": meta.get("chunk_index"),
+                    "chunk_index": chunk_idx,
                     "total_chunks": meta.get("total_chunks"),
                     "upload_time": meta.get("upload_time"),
+                    "content": content,
                     "score": round(float(score), 4),
                 }
             )

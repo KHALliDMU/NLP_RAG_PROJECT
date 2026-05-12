@@ -47,7 +47,6 @@ def root():
         "docs": "/docs",
         "openapi": "/openapi.json",
         "endpoints": {
-            "health": "/health",
             "query": "POST /api/query",
             "upload": "POST /api/upload",
         },
