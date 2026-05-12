@@ -69,7 +69,7 @@ async def upload_pdf(file: UploadFile, rag_service: RAGService = Depends(get_rag
 
         # Process the file
         controller = UploadController(rag_service)
-        result = controller.upload_pdf(temp_path)
+        result = controller.upload_pdf(temp_path, original_filename=file.filename)
 
         # Save file to uploads directory
         dest_path = UPLOADS_DIR / file.filename

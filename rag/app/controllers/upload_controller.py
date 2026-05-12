@@ -13,14 +13,14 @@ class UploadController:
         self.rag_service = rag_service
         self.document_service = DocumentService()
 
-    def upload_pdf(self, file_path: str) -> dict:
+    def upload_pdf(self, file_path: str, original_filename: str | None = None) -> dict:
         """Upload and process a PDF file."""
         try:
             # Validate file
             self.document_service.validate_pdf(file_path)
 
-            # Extract file name
-            file_name = Path(file_path).name
+            # Use original filename if provided, otherwise fall back to temp path name
+            file_name = original_filename or Path(file_path).name
 
             # Parse PDF
             documents = self.document_service.parse_pdf(file_path)

@@ -16,8 +16,11 @@ from langchain_groq import ChatGroq
 load_dotenv()
 
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-CHROMA_PERSIST_DIR = "vector_db"
-CHROMA_COLLECTION = "cv_collection"
+# Database for user-uploaded documents only
+_CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+_RAG_ROOT = os.path.abspath(os.path.join(_CURRENT_DIR, "..", ".."))
+CHROMA_PERSIST_DIR = os.path.join(_RAG_ROOT, "user_uploads_db")
+CHROMA_COLLECTION = "user_cv_collection"
 LLM_MODEL = "llama-3.3-70b-versatile"
 
 PROMPT_TEMPLATE = ChatPromptTemplate.from_template(
@@ -161,10 +164,13 @@ class RAGService:
         }
 
     def is_ready(self) -> bool:
-        """Check if vector DB is ready."""
+        """Check if vector DB is ready and populated."""
         if self.vector_db is None:
             return False
         try:
-            return self.vector_db.get()["ids"] is not None
+            # get() returns a dict with 'ids', 'embeddings', etc.
+            # We check if 'ids' contains any elements.
+            results = self.vector_db.get()
+            return results.get("ids") is not None and len(results["ids"]) > 0
         except Exception:
             return False
